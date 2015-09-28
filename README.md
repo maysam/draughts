@@ -1,0 +1,3 @@
+# Draughts
+
+Game of Draughts

@@ -1,0 +1,14 @@
+html, body {
+	-ms-touch-action: none;  /* Prevent scrolling in Windows Phone */
+}
+
+html {
+	background-image: url(../img/wood.jpg);
+	overflow: hidden; /* For IE desktop */
+}
+
+body {
+	margin: 0;
+	font-family: Arial, Helvetica, Sans-serif;
+	color: #000;
+}

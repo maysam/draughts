@@ -1,0 +1,311 @@
+html, body {
+	-ms-touch-action: none;  /* Prevent scrolling in Windows Phone */
+}
+
+html {
+	background-image: url(../img/wood.jpg);
+	overflow: hidden; /* For IE desktop */
+}
+
+body {
+	margin: 0;
+	font-family: Arial, Helvetica, Sans-serif;
+	color: #000;
+}
+
+img {
+	border: 0;
+}
+
+#loading {
+	z-index: 1;
+	background: #fff;
+}
+
+.copycredits {
+	position: absolute;
+	width: 68px;
+	height: 33px;
+	bottom: 5px;
+	right: 5px;
+}
+
+.popupWrap {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.5);
+}
+
+.popup {
+	position: fixed;
+	/*border-radius: 8px;*/
+	color: #fff;
+	border: 3px solid #eee;
+	background: #000;
+	left: 50%; 
+	top: 50%;
+	text-align: center;
+	box-shadow: 0 0 20px #000;
+	border-collapse: separate; /* IE9 */
+}
+
+.popup .title {
+	background: #eee;
+	text-align: center;
+	font-size: 24px;
+	line-height: 32px;
+	font-weight: bold;
+	color: #000;
+}
+
+.popup .close {
+	position: absolute; 
+	width: 34px; 
+	height: 34px; 
+	cursor: pointer;
+}
+
+.popup a:link, .popup a:visited {
+	color: yellow;
+}
+
+/* Language selection UI */
+
+#langSelect {
+	background: #fff;
+	width: 200px;
+	position: absolute;
+	bottom: 0;
+	left: 0;	
+}
+.flag {
+	background-image: url(../img/flags.png);
+	background-size: 240px 12px;
+	margin-right: 3px;
+	width: 18px;
+	height: 12px;
+	display: inline-block;
+}
+#langSelect td {
+	color: #000;
+	text-decoration: none;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 5px 2px;
+
+}
+#langSelect tbody td:hover {
+	background: #ccc;
+	cursor: pointer;
+}
+
+#langSelect tfoot tr td:after {
+	content: '▼';
+	float: right;
+	display: inline-block;
+	color: #838383;
+}
+#langSelect.open tfoot tr td:after {
+	content: '▲';
+}
+#langSelect.open {
+	z-index: 1;
+}
+#langSelect tbody {
+	display: none;
+}
+
+/* /Language selection UI */
+
+.progressbar {
+	position: absolute;
+	top: 400px;
+	left: 130px;
+	width: 540px;
+	border-radius: 8px; /* (height of inner div) / 2 + padding */
+	padding: 3px;
+	background-color: #eee;
+	box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.4) inset;
+	border-collapse: separate; /* IE 9 */
+}
+
+.progressbar > div {
+	width: 0; /* Adjust with JavaScript */
+	height: 10px;
+	border-radius: 10px;
+	background: #666; /* Old browsers */
+	background: -moz-linear-gradient(top, #666 0%, #999 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#666), color-stop(100%,#999)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #666 0%,#999 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #666 0%,#999 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #666 0%,#999 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #666 0%,#999 100%); /* W3C */
+}
+
+#fullscreen-icon {
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+	cursor: pointer;
+	width: 40px;
+	height: 35px;
+	background: url(../img/fullscreen-on.png);
+}
+
+#fullscreen-icon.on {
+	background: url(../img/fullscreen-off.png);
+}
+
+#rotateHint {
+	background: rgba(255,255,255,0.85);
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	text-align: center;
+	display: none;
+	z-index: 99999;
+	font-family: Arial, Helvetica, Sans-serif;
+	padding: 2em;
+	color: #000;
+}
+
+#rotateHint h2 {
+	font-size: 20px;
+}
+
+#rotateHint img.rotate {
+	width: 80%;
+	max-width: 400px;
+}
+
+#rotateHint #rotateClose {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	width: 32px;
+	height: 32px;
+	cursor: pointer;
+}
+
+/*
+@media screen and (orientation:landscape) {
+	#rotateHint > h2 {
+		margin-top: 4%;
+	}
+}
+*/
+
+#gameContainer, #adContainer {
+	position: absolute;
+	top: 0; left: 0;
+	transform-origin: 0 0;
+	-webkit-transform-origin: 0 0;
+	-ms-transform-origin: 0 0;
+}
+
+#adContainer {
+	z-index: 9;
+	visibility: hidden;
+	background: rgba(0,0,0,0.5);
+	width: 100%;
+	height: 100%;
+}
+
+#adContainer iframe {
+	visibility: hidden;
+}
+
+#throbber {
+	position: absolute;
+	width: 100%;
+	top: 45%;
+	text-align: center;
+}
+
+#timeLeft {
+	position: absolute;
+	width: 100%;
+	left: 0;
+	bottom: 0;
+}
+
+#timeLeft>div {
+	width: 0; /* Adjust with JavaScript */
+	height: 4px;
+	background: red;
+}
+
+* {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	outline: none !important;
+	outline-style: none;
+	-webkit-tap-highlight-color: rgba(255, 255, 255, 0); 
+	-webkit-tap-highlight-color: transparent;
+}
+
+/** CSS animations (from animate.css) **/
+
+.animated1s {
+	-webkit-animation-duration: 1s;
+	animation-duration: 1s;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+}
+
+@-webkit-keyframes slideOutUp {
+	0% { -webkit-transform: translateY(0); }
+	100% { opacity: 0; -webkit-transform: translateY(-2000px); }
+}
+
+@keyframes slideOutUp {
+	0% { -ms-transform: translateY(0); transform: translateY(0); }
+	100% { opacity: 0; -ms-transform: translateY(-1000px); transform: translateY(-1000px); }
+}
+
+.slideOutUp {
+	-webkit-animation-name: slideOutUp;
+	animation-name: slideOutUp;
+}
+
+@-webkit-keyframes throbber-spinner {
+  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@-moz-keyframes throbber-spinner {
+  0% { -moz-transform: rotate(0deg); transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@-o-keyframes throbber-spinner {
+  0% { -o-transform: rotate(0deg); transform: rotate(0deg); }
+  100% { -o-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@keyframes throbber-spinner {
+  0% { transform: rotate(0deg); transform: rotate(0deg); }
+  100% { transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+.throbber {
+	display: inline-block;
+	text-indent: 100%;
+	width: 56px;
+	height: 56px;
+	border: solid 8px transparent;
+	border-top-color: #29d;
+	border-left-color: #29d;
+	border-radius: 60px;
+	-webkit-animation: throbber-spinner 400ms linear infinite;
+	-moz-animation: throbber-spinner 400ms linear infinite;
+	-o-animation: throbber-spinner 400ms linear infinite;
+	animation: throbber-spinner 400ms linear infinite;
+}

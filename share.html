@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Share</title>
+<link rel="stylesheet" type="text/css" href="css/popup.css"> 
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<style type="text/css">
+
+body {
+	padding: 10px;
+}
+
+a {
+	font-size: 20px;
+	text-decoration: none;
+	color: #dedede;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+a:hover {
+	color: #fff;
+	text-shadow: 0 0 5px #f00;
+}
+
+table {
+	margin: 0 auto;
+}
+
+td {
+	padding: 10px 20px;
+}
+
+#whatsapp {
+	display: none;
+}
+
+</style>
+<script>
+
+function getDescription()
+{
+	var content, doc = parent.document;
+	if (content = doc.querySelector('meta[property="og:description"]') || doc.querySelector('meta[name="description"]')) {
+		return content.getAttribute('content');
+	}
+	return '';
+}
+
+function getImage()
+{
+	var content, doc = parent.document;
+	if (content = doc.querySelector('meta[property="og:image"]')) {
+		return content.getAttribute('content');
+	}
+	return '';
+};
+
+function share(what) 
+{
+	var shareLink = parent.location,
+       shareTitle = parent.document.title,
+	    shareDescription = getDescription(),
+	    shareMedia = getImage(),
+	    url;
+
+	switch(what) {
+		case 'facebook':
+			url = '//www.facebook.com/share.php?m2w&s=100&p[url]=' + encodeURIComponent(shareLink) + '&p[images][0]=' + encodeURIComponent(shareMedia) + '&p[title]=' + encodeURIComponent(shareTitle) + '&p[summary]=' + encodeURIComponent(shareDescription);
+			break;
+		case 'twitter':
+			url = 'https://twitter.com/intent/tweet?original_referer=' + encodeURIComponent(shareLink) + '&text=' + encodeURIComponent(shareTitle) + '%20' + encodeURIComponent(shareLink);
+			break;
+		case 'pinterest':
+			url = '//pinterest.com/pin/create/button/?url=' + encodeURIComponent(shareLink) + '&media=' + encodeURIComponent(shareMedia) + '&description=' + encodeURIComponent(shareTitle);
+			break;
+		case 'linkedin':
+			url = '//www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(shareLink) + '&title=' + encodeURIComponent(shareTitle) + '&source=' + encodeURIComponent(shareLink);
+			break;
+		case 'googleplus':
+			url = '//plus.google.com/share?url=' + encodeURIComponent(shareLink);
+			break;
+		case 'whatsapp':
+			parent.location = 'whatsapp://send?text=' + encodeURIComponent('Play ' + shareTitle + ': ' + shareLink)
+			return false;
+	}
+	window.open(url, 'Share', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
+
+	return false;
+}
+
+window.onload = function() {
+	// Only show WhatsApp button on phones:
+	var ua = navigator.userAgent;
+	if (/Android|iPhone/i.test(ua) && !/iPod|iPad/i.test(ua)) {
+		document.getElementById('whatsapp').style.display = 'block';
+	}
+}
+
+</script>
+</head>
+<body>
+<table>
+<tr>
+	<td>
+		<a href="#" onclick="return share('facebook')">
+		<i class="fa fa-facebook-square fa-2x"></i>
+		<span>Facebook</span>
+		</a>
+	</td>
+
+	<td>
+		<a href="#" onclick="return share('twitter')">
+		<i class="fa fa-twitter-square fa-2x"></i>
+		<span>Twitter</span>
+		</a>
+	</td>
+
+</tr><tr>
+
+	<td>
+		<a href="#" onclick="return share('googleplus')">
+		<i class="fa fa-google-plus-square fa-2x"></i>
+		<span>Google Plus</span>
+		</a>
+	</td>
+
+	<td>
+		<a href="#" onclick="return share('pinterest')">
+		<i class="fa fa-pinterest-square fa-2x"></i>
+		<span>Pinterest</span>
+		</a>
+	</td>
+
+</tr><tr>
+	
+	<td>
+		<a id="whatsapp" href="#" onclick="return share('whatsapp')">
+		<i class="fa fa-whatsapp fa-2x"></i>
+		<span>Whatsapp</span>
+		</a>
+	</td>
+
+</tr></table>
+
+</body>
+</html>

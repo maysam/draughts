@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Credits</title>
+<link rel="stylesheet" type="text/css" href="css/popup.css"> 
+<style type="text/css">
+
+body {
+	color: #fff;
+	padding: 10px;
+	text-align: center;
+}
+
+h1 {
+	font: 24px Arial, Helvetica, Sans-serif;
+	font-weight: bold;
+	margin: 0;
+}
+
+@-webkit-keyframes zoomIn {
+	0% { opacity: 0; -webkit-transform: scale3d(.3, .3, .3); }
+	50% { opacity: 1; }
+}
+
+@keyframes zoomIn {
+	0% { opacity: 0; -ms-transform: scale3d(.3, .3, .3); transform: scale3d(.3, .3, .3); }
+	50% { opacity: 1; }
+}
+
+.zoomIn {
+	-webkit-animation-name: zoomIn;
+	animation-name: zoomIn;
+	-webkit-animation-duration: 1s;
+	animation-duration: 1s;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+}
+
+.zoomIn img {
+	width: 300px;
+	height: 91px;
+	margin-top: 15px;
+}
+
+</style>
+</head>
+<body>
+<h1>This game is developed by</h1>
+<div class="zoomIn"><img src="img/logo_zygomatic.png" alt="Zygomatic"></div>
+<p>Sound effects from http://www.freesfx.co.uk</p>
+</body>
+</html>
