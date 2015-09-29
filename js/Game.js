@@ -324,7 +324,7 @@ var Game = {
 	},
 	valid_move: function(i,j)
 	{
-		return (i>=0 && i<8 && j>=0 && j<8)
+		return (i>=0 && i<10 && j>=0 && j<10)
 	},
 	isComputer: function(i,j)
 	{
