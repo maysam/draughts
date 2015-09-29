@@ -415,8 +415,18 @@ var Game = {
 			var dir = directions[d]
 			var x = dir[0]
 			var y = dir[1]
-			if(Game.valid_move(i+x,j+y) && Game.pegs[i+x][j+y] == 0)
-				moves.push([i, j, i+x, j+y])
+			var from = 1
+			var to = 1
+			if(is_king)
+				to = 10
+			for (var z = from; z <= to; z++) {
+				var xz = x*z
+				var yz = y*z
+				if(Game.valid_move(i+xz,j+yz) && Game.pegs[i+xz][j+yz] == 0)
+					moves.push([i, j, i+xz, j+yz])
+				else
+					break
+			}
 		}
 		return moves
 	},
