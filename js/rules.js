@@ -21,8 +21,8 @@ Rules.Base.prototype = Object.create(Object.prototype, {
       this.dcount = 0;
       this.lcount = 0;
 
-      for (var y = 0; y < 8; ++y) {
-        for (var x = 0; x < 8; ++x) {
+      for (var y = 0; y < 10; ++y) {
+        for (var x = 0; x < 10; ++x) {
           var p = this.board[y][x];
           if (p > 0) {
             ++this.dcount;
@@ -35,9 +35,13 @@ Rules.Base.prototype = Object.create(Object.prototype, {
   },
 
   doDirs: {
-    value: function (p, block) {
+    value: function (type, p, block) {
       var dirs = this.dirsMap[p];
-
+      if (type == 'jump') {
+        if (p > -2 && p < 2) {
+          dirs = this.dirsMap[p*2]
+        }
+      }
       for (var i = 0; i < dirs.length; ++i) {
         var dir = dirs[i];
         var dx  = dir[0];
@@ -51,8 +55,8 @@ Rules.Base.prototype = Object.create(Object.prototype, {
   doSquares: {
     value: function (block) {
       if (this.side == 1) {
-        for (var y = 0; y < 8; ++y) {
-          for (var x = 0; x < 8; ++x) {
+        for (var y = 0; y < 10; ++y) {
+          for (var x = 0; x < 10; ++x) {
             var p = this.board[y][x];
 
             if (p > 0) {
@@ -61,8 +65,8 @@ Rules.Base.prototype = Object.create(Object.prototype, {
           }
         }
       } else if (this.side == -1) {
-        for (var y = 7; y >= 0; --y) {
-          for (var x = 7; x >= 0; --x) {
+        for (var y = 9; y >= 0; --y) {
+          for (var x = 9; x >= 0; --x) {
             var p = this.board[y][x];
 
             if (p < 0) {
@@ -79,13 +83,13 @@ Rules.Base.prototype = Object.create(Object.prototype, {
       var found = false;
       var oppCount = this.side == 1 ? 'lcount' : 'dcount';
 
-      this.doDirs(p, function (dx, dy) {
+      this.doDirs('jump', p, function (dx, dy) {
         var mx =  x + dx;
         var nx = mx + dx;
         var my =  y + dy;
         var ny = my + dy;
 
-        if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
+        if (nx >= 0 && nx < 10 && ny >= 0 && ny < 10) {
           var p = this.board[y][x];
           var m = this.board[my][mx];
           var n = this.board[ny][nx];
@@ -94,7 +98,7 @@ Rules.Base.prototype = Object.create(Object.prototype, {
                          (this.side == -1 && m > 0))) {
             found = true;
 
-            var promoted = (p == 1 && ny == 7) || (p == -1 && ny == 0);
+            var promoted = (p == 1 && ny == 9) || (p == -1 && ny == 0);
             var ncurrent = current.concat([nx, ny]);
             var q = (promoted ? p * 2: p);
 
@@ -138,18 +142,18 @@ Rules.Base.prototype = Object.create(Object.prototype, {
     value: function (x, y, p, block) {
       var found = false;
 
-      this.doDirs(p, function (dx, dy) {
+      this.doDirs('move', p, function (dx, dy) {
         var nx = x + dx;
         var ny = y + dy;
 
-        if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8) {
+        if (nx >= 0 && nx < 10 && ny >= 0 && ny < 10) {
           var p = this.board[y][x];
           var n = this.board[ny][nx];
 
           if (n == 0) {
             found = true;
 
-            var promoted = (p == 1 && ny == 7) || (p == -1 && ny == 0);
+            var promoted = (p == 1 && ny == 9) || (p == -1 && ny == 0);
             var q = (promoted ? p * 2: p);
 
             this.board[y][x]   = 0;
@@ -210,27 +214,31 @@ Rules.Player = function (board, side, _level) {
 Rules.Player.prototype = Object.create(Rules.Base.prototype, {
   ptable: {
     value: [
-      [ 00, 00, 00, 00, 00, 00, 00, 00 ],
-      [ 75, 00, 78, 00, 78, 00, 75, 00 ],
-      [ 00, 67, 00, 72, 00, 72, 00, 67 ],
-      [ 61, 00, 67, 00, 67, 00, 61, 00 ],
-      [ 00, 58, 00, 61, 00, 61, 00, 58 ],
-      [ 56, 00, 58, 00, 58, 00, 56, 00 ],
-      [ 00, 55, 00, 56, 00, 56, 00, 55 ],
-      [ 55, 00, 58, 00, 58, 00, 55, 00 ]
+      [ 00, 00, 00, 00, 00, 00, 00, 00, 00, 00 ],
+      [ 75, 00, 78, 00, 78, 00, 78, 00, 75, 00 ],
+      [ 00, 67, 00, 72, 00, 72, 00, 72, 00, 67 ],
+      [ 61, 00, 67, 00, 67, 00, 67, 00, 61, 00 ],
+      [ 00, 58, 00, 61, 00, 61, 00, 61, 00, 58 ],
+      [ 61, 00, 67, 00, 67, 00, 67, 00, 61, 00 ],
+      [ 00, 58, 00, 61, 00, 61, 00, 61, 00, 58 ],
+      [ 56, 00, 58, 00, 58, 00, 58, 00, 56, 00 ],
+      [ 00, 55, 00, 56, 00, 56, 00, 56, 00, 55 ],
+      [ 55, 00, 58, 00, 58, 00, 58, 00, 55, 00 ]
     ].reverse()
   },
 
   ktable: {
     value: [
-      [ 00, 92, 00, 85, 00, 85, 00, 85 ],
-      [ 92, 00, 92, 00, 92, 00, 92, 00 ],
-      [ 00, 92, 00, 99, 00, 99, 00, 85 ],
-      [ 85, 00, 99, 00, 99, 00, 92, 00 ],
-      [ 00, 92, 00, 99, 00, 99, 00, 85 ],
-      [ 85, 00, 99, 00, 99, 00, 92, 00 ],
-      [ 00, 92, 00, 92, 00, 92, 00, 92 ],
-      [ 85, 00, 85, 00, 85, 00, 92, 00 ]
+      [ 00, 92, 00, 85, 00, 85, 00, 85, 00, 85 ],
+      [ 92, 00, 92, 00, 92, 00, 92, 00, 92, 00 ],
+      [ 00, 92, 00, 99, 00, 99, 00, 99, 00, 85 ],
+      [ 85, 00, 99, 00, 99, 00, 99, 00, 92, 00 ],
+      [ 00, 92, 00, 99, 00, 99, 00, 99, 00, 85 ],
+      [ 85, 00, 99, 00, 99, 00, 99, 00, 92, 00 ],
+      [ 00, 92, 00, 99, 00, 99, 00, 99, 00, 85 ],
+      [ 85, 00, 99, 00, 99, 00, 99, 00, 92, 00 ],
+      [ 00, 92, 00, 92, 00, 92, 00, 92, 00, 92 ],
+      [ 85, 00, 85, 00, 85, 00, 85, 00, 92, 00 ]
     ].reverse()
   },
 
@@ -238,20 +246,20 @@ Rules.Player.prototype = Object.create(Rules.Base.prototype, {
     value: function () {
       var score = 0;
 
-      for (var y = 0; y < 8; ++y) {
-        for (var x = 0; x < 8; ++x) {
+      for (var y = 0; y < 10; ++y) {
+        for (var x = 0; x < 10; ++x) {
           switch (this.board[y][x]) {
             case  1:
               score += this.ptable[y][x];
               break;
             case -1:
-              score -= this.ptable[7-y][7-x];
+              score -= this.ptable[9-y][9-x];
               break;
             case  2:
               score += this.ktable[y][x];
               break;
             case -2:
-              score -= this.ktable[7-y][7-x];
+              score -= this.ktable[9-y][9-x];
               break;
             default:
               break;
