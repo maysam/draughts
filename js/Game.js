@@ -353,10 +353,7 @@ var Game = {
 	canJumpFrom: function(i,j)
 	{
 		if (Game.pegs[i][j]*Game.player > 0) {
-			var is_king = Math.abs(Game.pegs[i][j])==2
-			var directions = [[-1,-1], [1,-1]]
-			if(is_king)
-				directions = [[-1,-1], [1,-1], [-1,1], [1,1]]
+			var directions = [[-1,-1], [1,-1], [-1,1], [1,1]]
 			var capture_moves = Game.capture_moves(i,j, directions, [0,0])
 			if (capture_moves.length > 0) {
 				return true
@@ -378,16 +375,16 @@ var Game = {
 	possible_moves: function(i,j)
 	{
 		var is_king = Math.abs(Game.pegs[i][j])==2
-		var directions = [[-1,-1], [1,-1]]
-		if(is_king)
-			directions = [[-1,-1], [1,-1], [-1,1], [1,1]]
+		var	directions = [[-1,-1], [1,-1], [-1,1], [1,1]]
 		var capture_moves = Game.capture_moves(i,j, directions, [0,0])
 		if (capture_moves.length > 0) {
 			return capture_moves
 		}
 		var moves = []
-		if(Game.canJump())
+		if(Game.canJump()) // isn't this redundant?
 			return moves
+		if(!is_king)
+			directions = [[-1,-1], [1,-1]]
 		for (var d = 0; d < directions.length; d++) {
 			var dir = directions[d]
 			var x = dir[0]
