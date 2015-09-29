@@ -64,18 +64,18 @@ html {
 }
 #overlayDiv img {
 	position: absolute;
-	width: 48px;
-	height: 48px;
+	width: 38px;
+	height: 38px;
 	opacity: 0.5;
-	background-size: 48px;
+	background-size: 38px;
 }
 
 .peg {
 	position: absolute;
 	z-index: 1;
-	width: 46px;
-	height: 46px;
-	background-size: 46px;
+	width: 36px;
+	height: 36px;
+	background-size: 36px;
 }
 
 .popup .title {

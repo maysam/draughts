@@ -8,7 +8,7 @@ var Game = {
 	moves: 0,
 	pegs: [],
 	cells: [],
-	pegSize: 48,
+	pegSize: 38,
 	winner: 0,
 	player: -1,
 	computer: 1,
@@ -163,9 +163,9 @@ var Game = {
 	doAIDrop: function(player)
 	{
 		var bord = []
-		for (var i = 0; i < 8; i++) {
+		for (var i = 0; i < 10; i++) {
 			bord[i] = []
-			for (var j = 0; j < 8; j++) {
+			for (var j = 0; j < 10; j++) {
 				bord[i][j] = Game.pegs[j][i]
 			}
 		}
@@ -244,8 +244,8 @@ var Game = {
 	{
 		var humanPegs = 0
 		var computerPegs = 0
-		for (var i = 0; i < 8; i++) {
-			for (var j = 0; j < 8; j++) {
+		for (var i = 0; i < 10; i++) {
+			for (var j = 0; j < 10; j++) {
 				if (this.pegs[i][j]*this.player > 0) {
 					humanPegs ++
 				}
@@ -286,22 +286,22 @@ var Game = {
 		this.winner = 0;
 		this.player = -1;
 		this.computer = 1
-		for (var i = 0; i < 8; i++) {
+		for (var i = 0; i < 10; i++) {
 			this.pegs[i] = [];
-			for(var j = 0; j < 8; j++) {
+			for(var j = 0; j < 10; j++) {
 				this.pegs[i][j] = 0
 				if((i+j)%2==1)
 				{
 					// r = Math.random()*7
 					r = j
-					if(r<3) {
+					if(r<4) {
 						this.pegs[i][j] = this.computer
 						img = $('<img>', {id:'peg_' + i + '_' + j, 'class':'peg', src: 'img/'+(Game.player_color == -1 ? 'white' : 'black')+'.png'})
 							.css({left:(i*Game.pegSize)+'px', top:(j*Game.pegSize)+'px'})
 							.data('i', i).data('j', j)
 							.appendTo('#pegsDiv')
 					}
-					if(r>4) {
+					if(r>5) {
 						this.pegs[i][j] = this.player
 						img = $('<img>', {id:'peg_' + i + '_' + j, 'class':'peg', src: 'img/'+(Game.player_color == 1 ? 'white' : 'black')+'.png'})
 							.css({left:(i*Game.pegSize)+'px', top:(j*Game.pegSize)+'px'})
@@ -366,8 +366,8 @@ var Game = {
 	},
 	canJump: function()
 	{
-		for (var i = 0; i < 8; i++) {
-			for (var j = 0; j < 8; j++) {
+		for (var i = 0; i < 10; i++) {
+			for (var j = 0; j < 10; j++) {
 				if(Game.canJumpFrom(i,j)){
 					return true
 				}
@@ -400,8 +400,8 @@ var Game = {
 	shouldJump: undefined,
 	canMove: function()
 	{
-		for (var i = 0; i < 8; i++) {
-			for (var j = 0; j < 8; j++) {
+		for (var i = 0; i < 10; i++) {
+			for (var j = 0; j < 10; j++) {
 				if (Game.pegs[i][j]*Game.player > 0) {
 					var is_king = Math.abs(Game.pegs[i][j])==2
 					var directions = [[-1,-1], [1,-1]]
@@ -483,9 +483,9 @@ var Game = {
 	},
 	create: function ()
 	{
-		for(var i = 0; i < 8; i++) {
+		for(var i = 0; i < 10; i++) {
 			this.cells[i] = [];
-			for(var j = 0; j < 8; j++) {
+			for(var j = 0; j < 10; j++) {
 				if((i+j)%2==1)
 					src = "img/black_empty.gif"
 				else
