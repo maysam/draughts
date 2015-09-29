@@ -232,7 +232,7 @@ var Game = {
 			var enemy_sel = '#peg_' + enemy_i + '_' + enemy_j
 			$(enemy_sel).fadeIn(250).fadeOut(250).fadeIn(250).fadeOut(250, function() { $(this).remove(); })
 			Game.pegs[enemy_i][enemy_j] = 0
-			if(Game.canJumpFrom(to_i, to_j)) {
+			if(Game.canJumpFrom(to_i, to_j) > 0) {
 				Game.shouldJump = [to_i, to_j]
 			}
 	 		setTimeout(function() { GameSound.playSound(Game.turn == Game.computer ? 'pegsdrop1' : 'pegsdrop2'); }, 8);
@@ -333,58 +333,70 @@ var Game = {
 	capture_moves: function(i,j, directions, coming_dir)
 	{
 		var moves = []
-		for (var d = 0; d < directions.length; d++) {
+		var double_kill = false
+		var max_depth = 0
+		for (var d in directions) {
 			var dir = directions[d]
 			var x = dir[0]
 			var y = dir[1]
-
 			if(x+coming_dir[0] != 0 || y+coming_dir[1] != 0)
 				if(Game.valid_move(i+x*2,j+y*2) && Game.isComputer(i+x, j+y) && Game.pegs[i+x*2][j+y*2] == 0){
-					// var capture_moves = Game.capture_moves(i+x*2,j+y*2, directions, dir)
-					// if (capture_moves.length > 0) {
-					// 	moves = moves.concat(capture_moves)
-					// } else {
+					var captured_moves = Game.capture_moves(i+x*2,j+y*2, directions, dir)
+					if (captured_moves.moves.length > 0) {
+						if (!double_kill) {
+							double_kill = true
+							moves = []
+						}
 						moves.push([i, j, i+x*2, j+y*2])
-					// }
+						if(max_depth < captured_moves.depth) {
+							max_depth = captured_moves.depth
+						}
+					} else {
+						if (!double_kill) {
+							moves.push([i, j, i+x*2, j+y*2])
+						}
+					}
 				}
 		}
-		return moves
+		return {moves: moves, depth: max_depth+1}
 	},
 	canJumpFrom: function(i,j)
 	{
 		if (Game.pegs[i][j]*Game.player > 0) {
 			var directions = [[-1,-1], [1,-1], [-1,1], [1,1]]
 			var capture_moves = Game.capture_moves(i,j, directions, [0,0])
-			if (capture_moves.length > 0) {
-				return true
+			if (capture_moves.moves.length > 0) {
+				return capture_moves.depth
 			}
 		}
-		return false
+		return 0
 	},
 	canJump: function()
 	{
+		var max_jump = 0;
 		for (var i = 0; i < 10; i++) {
 			for (var j = 0; j < 10; j++) {
-				if(Game.canJumpFrom(i,j)){
-					return true
+				var jump_length = Game.canJumpFrom(i,j)
+				if(jump_length > max_jump){
+					max_jump = jump_length
 				}
 			}
 		}
-		return false
+		return max_jump
 	},
 	possible_moves: function(i,j)
 	{
 		var is_king = Math.abs(Game.pegs[i][j])==2
 		var	directions = [[-1,-1], [1,-1], [-1,1], [1,1]]
 		var capture_moves = Game.capture_moves(i,j, directions, [0,0])
-		if (capture_moves.length > 0) {
-			return capture_moves
+		if (capture_moves.moves.length > 0) {
+			return capture_moves.moves
 		}
-		var moves = []
-		if(Game.canJump()) // isn't this redundant?
-			return moves
+		if(Game.canJump() > 0) // there is another piece that can jump
+			return []
 		if(!is_king)
 			directions = [[-1,-1], [1,-1]]
+		var moves = []
 		for (var d = 0; d < directions.length; d++) {
 			var dir = directions[d]
 			var x = dir[0]
@@ -415,7 +427,7 @@ var Game = {
 				}
 			}
 		}
-		return Game.canJump()
+		return Game.canJump() > 0
 	},
 	make_draggable: function()
 	{
