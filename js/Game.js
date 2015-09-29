@@ -214,13 +214,20 @@ var Game = {
 		Game.pegs[from_i][from_j] = 0
 
 		Game.shouldJump = false
-		if(Math.abs(from_i-to_i) == 2) {
+		if(Math.abs(from_i-to_i) >= 2) {
 			// jump
-			var enemy_i = (from_i+to_i)/2
-			var enemy_j = (from_j+to_j)/2
-			var enemy_sel = '#peg_' + enemy_i + '_' + enemy_j
-			$(enemy_sel).fadeIn(250).fadeOut(250).fadeIn(250).fadeOut(250, function() { $(this).remove(); })
-			Game.pegs[enemy_i][enemy_j] = 0
+			var dir_i = (to_i - from_i)/Math.abs(to_i - from_i)
+			var dir_j = (to_j - from_j)/Math.abs(to_j - from_j)
+			var w = from_j
+			for (var z = from_i+dir_i; z != to_i; z += dir_i) {
+				w += dir_j
+				console.log(z, w)
+				var enemy_i = z
+				var enemy_j = w
+				var enemy_sel = '#peg_' + enemy_i + '_' + enemy_j
+				$(enemy_sel).fadeIn(500).fadeOut(500).fadeIn(500).fadeOut(500, function() { $(this).remove(); })
+				Game.pegs[enemy_i][enemy_j] = 0
+			}
 			if(Game.canJumpFrom(to_i, to_j) > 0) {
 				Game.shouldJump = [to_i, to_j]
 			}
@@ -328,11 +335,15 @@ var Game = {
 	{
 		return (i>=0 && i<10 && j>=0 && j<10)
 	},
+	isPlayer: function(i,j)
+	{
+		return Game.pegs[i][j] == Game.player || Game.pegs[i][j] == Game.player*2
+	},
 	isComputer: function(i,j)
 	{
 		return Game.pegs[i][j] == Game.computer || Game.pegs[i][j] == Game.computer*2
 	},
-	capture_moves: function(i,j, directions, coming_dir)
+	capture_moves: function(i,j, directions, coming_dir, is_king)
 	{
 		var moves = []
 		var double_kill = false
@@ -341,27 +352,59 @@ var Game = {
 			var dir = directions[d]
 			var x = dir[0]
 			var y = dir[1]
-			if(x+coming_dir[0] != 0 || y+coming_dir[1] != 0)
-				if(Game.valid_move(i+x*2,j+y*2) && Game.isComputer(i+x, j+y) && Game.pegs[i+x*2][j+y*2] == 0){
-					var captured_moves = Game.capture_moves(i+x*2,j+y*2, directions, dir)
-					if (captured_moves.moves.length > 0) {
-						if (!double_kill) {
-							double_kill = true
-							moves = []
-						}
-						if(max_depth < captured_moves.depth) {
-							max_depth = captured_moves.depth
-							moves = []
-						}
-						if(max_depth == captured_moves.depth) {
-							moves.push([i, j, i+x*2, j+y*2])
-						}
+			if(x+coming_dir[0] != 0 || y+coming_dir[1] != 0) {
+				var seen_computer = false
+				var seen_landing = false
+				var z = 1
+				while(Game.valid_move(i+x*z,j+y*z)){
+					var xz = i+x*z
+					var yz = j+y*z
+					if(seen_computer) {
+						if(Game.isPlayer(xz, yz))
+							break
+						if(Game.isComputer(xz, yz))
+							break
+						seen_landing = true
+					} else if (seen_landing) {
+						if(Game.isPlayer(xz, yz))
+							break
+						if(Game.isComputer(xz, yz))
+							break
 					} else {
-						if (!double_kill) {
-							moves.push([i, j, i+x*2, j+y*2])
-						}
+						if(Game.isPlayer(xz, yz))
+							break
+						if(Game.isComputer(xz, yz))
+							seen_computer = true
+						else
+							if(!is_king)
+								break
 					}
+
+					if (seen_landing) {
+						var captured_moves = Game.capture_moves(i+x*z,j+y*z, directions, dir, is_king)
+						if (captured_moves.moves.length > 0) {
+							if (!double_kill) {
+								double_kill = true
+								moves = []
+							}
+							if(max_depth < captured_moves.depth) {
+								max_depth = captured_moves.depth
+								moves = []
+							}
+							if(max_depth == captured_moves.depth) {
+								moves.push([i, j, i+x*z, j+y*z])
+							}
+						} else {
+							if (!double_kill) {
+								moves.push([i, j, i+x*z, j+y*z])
+							}
+						}
+						if(!is_king)
+							break
+					}
+					z++
 				}
+			}
 		}
 		return {moves: moves, depth: max_depth+1}
 	},
@@ -369,7 +412,8 @@ var Game = {
 	{
 		if (Game.pegs[i][j]*Game.player > 0) {
 			var directions = [[-1,-1], [1,-1], [-1,1], [1,1]]
-			var capture_moves = Game.capture_moves(i,j, directions, [0,0])
+			var is_king = Math.abs(Game.pegs[i][j])==2
+			var capture_moves = Game.capture_moves(i,j, directions, [0,0], is_king)
 			if (capture_moves.moves.length > 0) {
 				return capture_moves.depth
 			}
@@ -397,7 +441,7 @@ var Game = {
 			// make sure is longest jump
 			var acceptable_jump = Game.canJump()
 			if(acceptable_jump > 0) {
-				var capture_moves = Game.capture_moves(i,j, directions, [0,0])
+				var capture_moves = Game.capture_moves(i,j, directions, [0,0], is_king)
 				if (capture_moves.moves.length > 0 && capture_moves.depth == acceptable_jump) {
 					return capture_moves.moves
 				}
@@ -405,7 +449,7 @@ var Game = {
 			}
 		} else if(Game.shouldJump[0] == i && Game.shouldJump[1] == j) {
 			// just jump
-			var capture_moves = Game.capture_moves(i,j, directions, [0,0])
+			var capture_moves = Game.capture_moves(i,j, directions, [0,0], is_king)
 			return capture_moves.moves
 		}
 		if(!is_king)
