@@ -218,7 +218,7 @@ var Game = {
 			// change the src
 			originator.prop('src', 'img/'+(Game.player_color == 1 ? 'white' : 'black')+'_king.png')
 		}
-		if(to_j == 7 && Game.pegs[to_i][to_j] == Game.computer) {
+		if(to_j == 9 && Game.pegs[to_i][to_j] == Game.computer) {
 			Game.pegs[to_i][to_j] *= 2
 			// change the src
 			originator.prop('src', 'img/'+(Game.player_color == -1 ? 'white' : 'black')+'_king.png')
