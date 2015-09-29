@@ -212,19 +212,8 @@ var Game = {
 
 		Game.pegs[to_i][to_j] = Game.pegs[from_i][from_j]
 		Game.pegs[from_i][from_j] = 0
-		// king it
-		if(to_j == 0 && Game.pegs[to_i][to_j] == Game.player) {
-			Game.pegs[to_i][to_j] *= 2
-			// change the src
-			originator.prop('src', 'img/'+(Game.player_color == 1 ? 'white' : 'black')+'_king.png')
-		}
-		if(to_j == 9 && Game.pegs[to_i][to_j] == Game.computer) {
-			Game.pegs[to_i][to_j] *= 2
-			// change the src
-			originator.prop('src', 'img/'+(Game.player_color == -1 ? 'white' : 'black')+'_king.png')
-		}
 
-		Game.shouldJump = undefined
+		Game.shouldJump = false
 		if(Math.abs(from_i-to_i) == 2) {
 			// jump
 			var enemy_i = (from_i+to_i)/2
@@ -239,6 +228,19 @@ var Game = {
 		} else {
 			setTimeout(function() { GameSound.playSound(Game.turn == Game.computer ? 'pegdrop1' : 'pegdrop2'); }, 8);
 		}
+		if (!Game.shouldJump) {
+			// king it
+			if(to_j == 0 && Game.pegs[to_i][to_j] == Game.player) {
+				Game.pegs[to_i][to_j] *= 2
+				// change the src
+				originator.prop('src', 'img/'+(Game.player_color == 1 ? 'white' : 'black')+'_king.png')
+			}
+			if(to_j == 9 && Game.pegs[to_i][to_j] == Game.computer) {
+				Game.pegs[to_i][to_j] *= 2
+				// change the src
+				originator.prop('src', 'img/'+(Game.player_color == -1 ? 'white' : 'black')+'_king.png')
+			}
+		};
 	},
 	changeHand: function()
 	{
@@ -258,7 +260,7 @@ var Game = {
 		$('#human-captures').text(humanPegs)
 		$('#computer-captures').text(computerPegs)
 
-		if(typeof Game.shouldJump == 'undefined'){
+		if(!Game.shouldJump){
 			this.turn = -this.turn;
 		}
 
@@ -347,9 +349,12 @@ var Game = {
 							double_kill = true
 							moves = []
 						}
-						moves.push([i, j, i+x*2, j+y*2])
 						if(max_depth < captured_moves.depth) {
 							max_depth = captured_moves.depth
+							moves = []
+						}
+						if(max_depth == captured_moves.depth) {
+							moves.push([i, j, i+x*2, j+y*2])
 						}
 					} else {
 						if (!double_kill) {
@@ -388,12 +393,21 @@ var Game = {
 	{
 		var is_king = Math.abs(Game.pegs[i][j])==2
 		var	directions = [[-1,-1], [1,-1], [-1,1], [1,1]]
-		var capture_moves = Game.capture_moves(i,j, directions, [0,0])
-		if (capture_moves.moves.length > 0) {
+		if(!Game.shouldJump) {
+			// make sure is longest jump
+			var acceptable_jump = Game.canJump()
+			if(acceptable_jump > 0) {
+				var capture_moves = Game.capture_moves(i,j, directions, [0,0])
+				if (capture_moves.moves.length > 0 && capture_moves.depth == acceptable_jump) {
+					return capture_moves.moves
+				}
+				return []
+			}
+		} else if(Game.shouldJump[0] == i && Game.shouldJump[1] == j) {
+			// just jump
+			var capture_moves = Game.capture_moves(i,j, directions, [0,0])
 			return capture_moves.moves
 		}
-		if(Game.canJump() > 0) // there is another piece that can jump
-			return []
 		if(!is_king)
 			directions = [[-1,-1], [1,-1]]
 		var moves = []
@@ -406,7 +420,7 @@ var Game = {
 		}
 		return moves
 	},
-	shouldJump: undefined,
+	shouldJump: false,
 	canMove: function()
 	{
 		for (var i = 0; i < 10; i++) {
@@ -439,10 +453,7 @@ var Game = {
 	    target = $(ev.target)
 	    i = target.data('i')
 	    j = target.data('j')
-	    var possibles = []
-			if(typeof Game.shouldJump == 'undefined' || (Game.shouldJump[0] == i && Game.shouldJump[1] == j)) {
-				possibles = Game.possible_moves(i,j)
-			}
+			var possibles = Game.possible_moves(i,j)
 			for (var k = 0; k < possibles.length; k++) {
 				m = possibles[k][2]
 				n = possibles[k][3]
