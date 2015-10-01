@@ -1,7 +1,7 @@
 var Game = {
 
 	difficulty: 'easy',
-	images: ['img/sprite.png', 'img/close.png', 'img/draughts.jpg', 'img/draughts-small.jpg', 'img/logo_zygomatic.png', 'img/black_empty.gif', 'img/red_empty.gif', 'img/white.png', 'img/white_king.png', 'img/black.png', 'img/black_king.png'],
+	images: ['img/sprite.png', 'img/close.png', 'img/draughts.jpg', 'img/draughts-small.jpg', 'img/logo_zygomatic.png', 'img/black_empty.png', 'img/white_empty.png', 'img/white.png', 'img/white_king.png', 'img/black.png', 'img/black_king.png'],
 	fonts: [],
 
 	turn: 1,
@@ -561,9 +561,9 @@ var Game = {
 			this.cells[i] = [];
 			for(var j = 0; j < 10; j++) {
 				if((i+j)%2==1)
-					src = "img/black_empty.gif"
+					src = "img/black_empty.png"
 				else
-					src = "img/red_empty.gif"
+					src = "img/white_empty.png"
 				rectGraphics = $('<img />');
 				rectGraphics.css({
 					// backgroundImage: 'url('+src+')',
