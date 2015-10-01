@@ -221,7 +221,6 @@ var Game = {
 			var w = from_j
 			for (var z = from_i+dir_i; z != to_i; z += dir_i) {
 				w += dir_j
-				console.log(z, w)
 				var enemy_i = z
 				var enemy_j = w
 				var enemy_sel = '#peg_' + enemy_i + '_' + enemy_j
@@ -231,9 +230,9 @@ var Game = {
 			if(Game.canJumpFrom(to_i, to_j) > 0) {
 				Game.shouldJump = [to_i, to_j]
 			}
-	 		setTimeout(function() { GameSound.playSound(Game.turn == Game.computer ? 'pegsdrop1' : 'pegsdrop2'); }, 8);
+			GameSound.playSound(Game.turn == Game.player ? 'pegsdrop1' : 'pegsdrop2');
 		} else {
-			setTimeout(function() { GameSound.playSound(Game.turn == Game.computer ? 'pegdrop1' : 'pegdrop2'); }, 8);
+			GameSound.playSound(Game.turn == Game.player ? 'pegdrop1' : 'pegdrop2');
 		}
 		if (!Game.shouldJump) {
 			// king it
