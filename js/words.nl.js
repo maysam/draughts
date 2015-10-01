@@ -33,6 +33,10 @@ var gameWords = {
 176: 'Mijn beurt',
 177: 'Jouw beurt',
 178: 'Ik win',
-179: 'Jij wint'
+179: 'Jij wint',
+
+180: 'Human',
+181: 'vs',
+182: 'Computer',
 
 };

@@ -33,5 +33,9 @@ var gameWords = {
 176: 'My turn', // TODO
 177: 'Your turn', // TODO
 178: 'You loose', // TODO
-179: 'You win' // TODO
+179: 'You win', // TODO,
+
+180: 'Human',
+181: 'vs',
+182: 'Computer', // TODO
 };

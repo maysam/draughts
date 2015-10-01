@@ -38,6 +38,9 @@ var gameWords = {
 176: 'My turn',
 177: 'Your turn',
 178: 'You loose',
-179: 'You win'
+179: 'You win',
 
+180: 'Human',
+181: 'vs',
+182: 'Computer',
 };
